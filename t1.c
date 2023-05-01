@@ -122,7 +122,7 @@ int* resolve(int **matrix, int n, int *vetor)
 Encontra um caminho que percorre todos os vertices do grafo e retorna a lista contendo esses vértices.
 
 Parametros:
-int** matrix: Matrix de adjacencias do grafo
+int** matrix: Matrix de adjacencias do    
 int n: Tamanho da matrix atual
 int* vetor: vetor contendo o caminho completo
 int nv: tamanho atual do vetor de resposta
@@ -134,8 +134,8 @@ Caso de parada (base): Se n = 1, entao adiciona o proprio vertice
 
 Passo:
 Se o vertice n aponta para 1, ele eh o novo comeco do caminho, adiciona no comeco do vetor
-Se nao, ele deve ser inserido antes do primeiro vertice que ele aponta
-Se ele nao aponta para nenhum vertice, ele deve ser o fim do caminho, adiciona no fim do vetor
+Se o ultimo vertice aponta para ele, adiciona no fim do vetor
+Se não, ele deve ser inserido entre um par de vertices apontado e aponta encontrado por busca binaria
 
 */
     if(n <= 0)
@@ -145,6 +145,7 @@ Se ele nao aponta para nenhum vertice, ele deve ser o fim do caminho, adiciona n
         return NULL;
     }
     
+    // Parada
     if(n == 1)
     {
         vetor[n-1] = n;
@@ -156,21 +157,49 @@ Se ele nao aponta para nenhum vertice, ele deve ser o fim do caminho, adiciona n
     // Calcula o vetor de saida sem o ultimo termo
     vetor = resolve(matrix, n-1, vetor);
 
-    for(int i = 0; i < n-1; i++)
-    {
-        if(has_edge(n,vetor[i],matrix))
-        {
-            vetor = inserirEmPos(n,i,vetor);  // insere o numero n antes do valor i no vetor de saida e retorna
-            //mostrarVetor(vetor, n);
-            return vetor;
-        }
-    }
-    // Se ele nao aponta para ninguem
+    // Se n aponta para o primeiro
 
-    vetor[n-1] = n;
-    //printf("Caso Final\n");
-    //mostrarVetor(vetor, n);
-    return vetor;
+    if(has_edge(n, vetor[0], matrix))
+    {
+        vetor = inserirEmPos(n,0,vetor);
+        return vetor;
+
+    }
+
+    // Se o ultimo aponta para n
+
+    if(has_edge(vetor[n-2], n, matrix))
+    {
+        vetor[n-1] = n;
+        return vetor;
+
+    }
+
+    // Busca binaria
+    int inicio = 0 , fim = n-2;
+
+    //printf("entrar no while");
+    while (fim - inicio > 1)
+    {
+        //printf("inicio: %d fim: %d\n", inicio, fim);
+        if(has_edge(vetor[(fim-inicio)/2], n, matrix))
+        {
+            inicio = (fim+inicio)/2;
+            //printf("pra tras inicio: %d fim: %d\n", inicio, fim);
+        }
+        else
+        {
+            fim = (fim+inicio)/2;
+            //printf("pra frente inicio: %d fim: %d\n", inicio, fim);
+
+        }
+            
+    }
+    vetor = inserirEmPos(n,fim,vetor);
+        return vetor;
+    
+
+
 
 
 
@@ -196,9 +225,9 @@ scanf("%d", &n);
 int** matrix = geraMatrix(n);
 
 // Mostrar matriz por questoes de debug
-//mostrar(matrix, n);
+mostrar(matrix, n);
 
-//printf("\n");
+printf("\n");
 
 // Cria o vetor de respostas
 int* vetor = (int*) malloc(n*sizeof(int));
@@ -210,7 +239,7 @@ printf("Criei, agora vou resolver\n");
 clock_t inicio = clock();
 resolve(matrix, n, vetor);
 
-//mostrarVetor(vetor, n);
+mostrarVetor(vetor, n);
 clock_t fim = clock();
 printf("Resolvi em %lf\n", (double) (fim-inicio)/CLOCKS_PER_SEC);
 
