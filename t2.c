@@ -6,6 +6,18 @@ typedef struct pizza {
 } pizza;
 
 
+void pause()
+{
+
+// imprime uma mensagem
+   printf("Pressione qualquer tecla para continuar");
+
+// ler um caracter do teclado
+   getchar();
+   getchar();
+
+}
+
 // codigo para ordenar o vetor
 void merge(pizza *pizzas, int left, int mid, int right) {
     int i, j, k;
@@ -78,19 +90,27 @@ int max(int a, int b)
     return a;
 }
 
-int solveRecu(pizza *pizzas, int N, int T, int tempoDecorrido, int memoizados[][T])
+int solveRecu(pizza *pizzas, int N, int T, int tempoDecorrido, int **memoizados)
 {
     if(N<=0)
         return 0;
-    if(memoizados[N][tempoDecorrido] > -1)
-        return  memoizados[N][tempoDecorrido];  // retornar resultado memoizado
+    printf("resolvendo %d em %d\n", N, tempoDecorrido);
+    //pause();
     int soluCom, soluSem;   // dois cenario possiveis, com ou sem a ultima pizza
     int tempoCom = tempoDecorrido + pizzas[N-1].t; // tempo decorrido considerando que sera feita a ultima pizza
     if(tempoCom > T)    // se fazer a pizza extoura o tempo
         soluCom = 0;    // nao fazer a pizza
     else
-        soluCom = solveRecu(pizzas, N-1, T, tempoCom, memoizados) + (pizzas[N-1].s - (tempoCom*pizzas[N-1].r));  // fazer a pizza
-    soluSem = solveRecu(pizzas, N-1, T, tempoDecorrido, memoizados);    // valor sem fazer a pizza
+    {
+        if(memoizados[N-1][tempoCom] > -1)
+            soluCom =  memoizados[N-1][tempoCom];  // utilizar resultado memoizado
+        else
+            soluCom = solveRecu(pizzas, N-1, T, tempoCom, memoizados) + (pizzas[N-1].s - (tempoCom*pizzas[N-1].r));  // fazer a pizza
+    }
+    if(memoizados[N-1][tempoDecorrido] > -1)
+        soluSem =  memoizados[N-1][tempoDecorrido];  // utilizar resultado memoizado
+    else
+        soluSem = solveRecu(pizzas, N-1, T, tempoDecorrido, memoizados);    // valor sem fazer a pizza
 
     // guarda os resultados obtidos na tabela de memoizacao
     memoizados[N-1][tempoCom] = soluCom;
@@ -101,15 +121,57 @@ int solveRecu(pizza *pizzas, int N, int T, int tempoDecorrido, int memoizados[][
 
 int solve(pizza *pizzas, int N, int T)
 {
-    int memoizados[N][T];
+    // Aloca a matriz dinamicamente
+    int **memoizados = (int **)malloc(N * sizeof(int *));
+    //printf("alocado %lu ", (unsigned long) memoizados);
+    if (memoizados == NULL) {
+        printf("Erro ao alocar memória para a matriz!\n");
+        return -1;
+    }
     for(int n = 0; n<N;n++)
+    {
+        memoizados[n] = (int *)malloc(T * sizeof(int));
+        //printf("alocado %lu ", (unsigned long) memoizados[n]);
         for(int t = 0; t<T; t++)
             memoizados[n][t] = -1;
+    }
+
+
+
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < T; j++) {
+            printf("%d ", memoizados[i][j]);
+        }
+        printf("\n");
+    }
+
+
+
 
     mergeSort(pizzas, 0, N - 1);    // ordena as pizzas de forma crescente de r atraves do mergesort
     // dada uma solucao contendo o conjunto ACB, se r(B) >= r(C) entao ABC >= ACB, justificando a escolha gulosa
 
-    return solveRecu(pizzas, N, T, 0, memoizados);
+    int resultado = solveRecu(pizzas, N, T, 0, memoizados);
+
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < T; j++) {
+            printf("%d ", memoizados[i][j]);
+        }
+        printf("\n");
+    }
+    
+    //TODO: liberar memoria
+
+    for(int n = 0; n<N;n++)
+    {
+        //printf("liberado %lu ", (unsigned long) memoizados[n]);
+        free(memoizados[n]);
+    }
+    //printf("liberado %lu ",(unsigned long) memoizados);
+    free(memoizados);
+
+    return resultado;
+
 }
 
 int main()
@@ -137,4 +199,6 @@ entrada:
 70 20 2
 60 15 3
 
+
+saida: 65
 */
