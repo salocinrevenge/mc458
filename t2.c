@@ -5,19 +5,6 @@ typedef struct pizza {
     int s, t, r;
 } pizza;
 
-
-void pause()
-{
-
-// imprime uma mensagem
-   printf("Pressione qualquer tecla para continuar");
-
-// ler um caracter do teclado
-   getchar();
-   getchar();
-
-}
-
 // codigo para ordenar o vetor
 void merge(pizza *pizzas, int left, int mid, int right) {
     int i, j, k;
@@ -94,7 +81,6 @@ int solveRecu(pizza *pizzas, int N, int T, int tempoDecorrido, int **memoizados)
 {
     if(N<=0)
         return 0;
-    printf("resolvendo %d em %d\n", N, tempoDecorrido);
     //pause();
     int soluCom, soluSem;   // dois cenario possiveis, com ou sem a ultima pizza
     int tempoCom = tempoDecorrido + pizzas[N-1].t; // tempo decorrido considerando que sera feita a ultima pizza
@@ -123,7 +109,6 @@ int solve(pizza *pizzas, int N, int T)
 {
     // Aloca a matriz dinamicamente
     int **memoizados = (int **)malloc(N * sizeof(int *));
-    //printf("alocado %lu ", (unsigned long) memoizados);
     if (memoizados == NULL) {
         printf("Erro ao alocar memória para a matriz!\n");
         return -1;
@@ -131,43 +116,21 @@ int solve(pizza *pizzas, int N, int T)
     for(int n = 0; n<N;n++)
     {
         memoizados[n] = (int *)malloc(T * sizeof(int));
-        //printf("alocado %lu ", (unsigned long) memoizados[n]);
         for(int t = 0; t<T; t++)
             memoizados[n][t] = -1;
     }
-
-
-
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < T; j++) {
-            printf("%d ", memoizados[i][j]);
-        }
-        printf("\n");
-    }
-
-
 
 
     mergeSort(pizzas, 0, N - 1);    // ordena as pizzas de forma crescente de r atraves do mergesort
     // dada uma solucao contendo o conjunto ACB, se r(B) >= r(C) entao ABC >= ACB, justificando a escolha gulosa
 
     int resultado = solveRecu(pizzas, N, T, 0, memoizados);
-
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < T; j++) {
-            printf("%d ", memoizados[i][j]);
-        }
-        printf("\n");
-    }
     
-    //TODO: liberar memoria
-
+    //Liberar memoria
     for(int n = 0; n<N;n++)
     {
-        //printf("liberado %lu ", (unsigned long) memoizados[n]);
         free(memoizados[n]);
     }
-    //printf("liberado %lu ",(unsigned long) memoizados);
     free(memoizados);
 
     return resultado;
