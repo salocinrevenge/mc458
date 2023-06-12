@@ -156,7 +156,8 @@ int main()
 
 
 /*
-compilando gcc t2.c -std=c99 -pedantic -Wall -lm -o t2 ; ./t2.exe
+compilando 
+gcc t2.c -std=c99 -pedantic -Wall -lm -o t2 ; ./t2
 
 entrada:
 
@@ -168,6 +169,8 @@ entrada:
 
 saida: 65
 
+
+testes para bordas
 
 2 20
 120 10 2
@@ -186,4 +189,70 @@ saida: 65
 120 10 3
 
 : 100
+
+teste com mais de 3 e r 0
+
+5 180
+80 25 1
+70 20 2
+60 15 3
+170 50 3
+90 12 0
+
+: 155
+
+teste com numeros negativos
+
+4 2
+40 0 50
+30 2 0
+80 0 0
+-1 0 3
+
+: 150
+
+teste para grandes instancias
+
+8 1000
+60 58 1
+700 30 3
+10000 89 5
+10000 90 5
+890 2 90
+800 100 3
+7000 400 2
+655 800 0
+
+:25432
+
+testes para valores de sabores finais nulos ou menores que 0
+3 2
+10 1 10
+30 1 40
+-10 0 0
+: 0
+
+teste para valores que nao se deve ordenar por r
+
+2 1000
+700 30 3
+10000 89 5
+
+:10015
+
+
+teste para grandes instancias
+
+8 1000
+60 58 1
+700 30 3
+10000 89 5
+10000 90 5
+890 2 90
+800 100 3
+7000 400 2
+655 800 0
+
+:25432
+
 */
