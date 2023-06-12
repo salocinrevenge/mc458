@@ -25,9 +25,19 @@ void merge(pizza *pizzas, int left, int mid, int right) {
     j = 0;
     k = left;
     while (i < n1 && j < n2) {
-        if (L[i].r <= R[j].r) {
+        if (L[i].t > R[j].t) {
             pizzas[k] = L[i];
             i++;
+        } else if (L[i].t == R[j].t)
+        {
+            if(L[i].r <= R[j].r)
+            {
+                pizzas[k] = L[i];
+                i++;
+            } else {
+                pizzas[k] = R[j];
+                j++;
+            }
         } else {
             pizzas[k] = R[j];
             j++;
@@ -173,8 +183,8 @@ saida: 65
 testes para bordas
 
 2 20
-120 10 2
 120 10 3
+120 10 2
 
 : 170
 
@@ -193,23 +203,23 @@ testes para bordas
 teste com mais de 3 e r 0
 
 5 180
-80 25 1
-70 20 2
-60 15 3
 170 50 3
-90 12 0
+60 15 3
+70 20 2
+90 12 1
+80 25 1
 
-: 155
+: 121
 
 teste com numeros negativos
 
 4 2
-40 0 50
-30 2 0
-80 0 0
--1 0 3
+40 1 50
+30 2 1
+80 1 1
+1 1 3
 
-: 150
+: 79
 
 teste para grandes instancias
 
@@ -221,7 +231,7 @@ teste para grandes instancias
 890 2 90
 800 100 3
 7000 400 2
-655 800 0
+655 800 1
 
 :25432
 
@@ -229,8 +239,8 @@ testes para valores de sabores finais nulos ou menores que 0
 3 2
 10 1 10
 30 1 40
--10 0 0
-: 0
+10 1 1
+: 9
 
 teste para valores que nao se deve ordenar por r
 
@@ -239,20 +249,5 @@ teste para valores que nao se deve ordenar por r
 10000 89 5
 
 :10015
-
-
-teste para grandes instancias
-
-8 1000
-60 58 1
-700 30 3
-10000 89 5
-10000 90 5
-890 2 90
-800 100 3
-7000 400 2
-655 800 0
-
-:25432
 
 */
