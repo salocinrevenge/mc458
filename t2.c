@@ -25,20 +25,11 @@ void merge(pizza *pizzas, int left, int mid, int right) {
     j = 0;
     k = left;
     while (i < n1 && j < n2) {
-        if (L[i].t > R[j].t) {
+        //printf("%lf e %lf\n",(double)L[i].t/L[i].r , (double)R[j].t/R[j].r);
+        if ((double)L[i].t/L[i].r > (double)R[j].t/R[j].r) {
             pizzas[k] = L[i];
             i++;
-        } else if (L[i].t == R[j].t)
-        {
-            if(L[i].r <= R[j].r)
-            {
-                pizzas[k] = L[i];
-                i++;
-            } else {
-                pizzas[k] = R[j];
-                j++;
-            }
-        } else {
+        } else{
             pizzas[k] = R[j];
             j++;
         }
@@ -132,7 +123,11 @@ int solve(pizza *pizzas, int N, int T)
 
 
 
-    mergeSort(pizzas, 0, N - 1);    // ordena as pizzas de forma crescente de r atraves do mergesort
+    mergeSort(pizzas, 0, N - 1);    // ordena as pizzas de forma decrescente de t/r atraves do mergesort
+    
+    //for(int i =0 ; i<N; ++i)
+      //  printf("pizza: %d %d %d\n",pizzas[i].s,pizzas[i].t,pizzas[i].r);
+    
     // dada uma solucao contendo o conjunto ACB, se r(B) >= r(C) entao ABC >= ACB, justificando a escolha gulosa
 
     int resultado = solveRecu(pizzas, N, T, 0, memoizados);
